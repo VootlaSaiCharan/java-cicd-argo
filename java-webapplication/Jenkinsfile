@@ -48,18 +48,7 @@ pipeline {
                 }
             }
         }
-
-        stage('Push Image'){
-            steps{ 
-                environment{
-                    DOCKER_IMAGE = "vootlasaicharan/java-cicd-argo:${BUILD_NUMBER}"
-                }
-                script{
-                    sh 'docker push ${DOCKER_IMAGE}'
-                }
-            }
-        }
-
+        
         stage('Running Container'){
             steps{
                 script{
