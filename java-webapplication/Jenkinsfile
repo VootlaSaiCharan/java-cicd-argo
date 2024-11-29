@@ -1,0 +1,70 @@
+pipeline {
+    agent any
+
+    tools{
+        maven 'maven3'
+    }
+
+    environment {
+        // we need to add sonarqube tool name
+        SCANNER_HOME = tool 'sonarqube-scanner'
+    }
+
+    stages {
+
+        stage('clone'){
+            steps {
+                git credentialsId: 'github-cred', url: 'https://github.com/VootlaSaiCharan/java-cicd-argo.git'
+            }
+        }
+
+        stage('maven compile'){
+            steps{
+                script{
+                    sh 'cd java-webapplication && mvn clean compile'
+                }
+            }
+        }
+
+        stage('Sonarqube analysis'){
+            steps{
+                // insted of adding sonar credential provide the sonarserver name in that we have already configured the sonar credentials
+                withSonarQubeEnv('sonar-server') {
+                    sh ''' cd java-webapplication && $SCANNER_HOME/bin/sonar-scanner -Dsonar.projectName=Java-cicd-argo \
+                    -Dsonar.java.binaries=. \
+                    -Dsonar.projectKey=Java-cicd-argo '''
+                }
+            }
+        }
+
+        stage('Creating a Image'){
+            steps{
+                environment{
+                    DOCKER_IMAGE = "vootlasaicharan/java-cicd-argo:${BUILD_NUMBER}"
+                }
+                script{
+                    sh 'cd java-webapplication && docker build -t ${DOCKER_IMAGE} .'
+                }
+            }
+        }
+
+//         stage('Push  Image'){
+//             steps{ 
+//                 environment{
+//                     DOCKER_IMAGE = "vootlasaicharan/java-cicd-argo:${BUILD_NUMBER}"
+//                 }
+//                 script{
+//                     sh 'docker push ${DOCKER_IMAGE}'
+//                 }
+//             }
+//         }
+
+//         stage('Running Container'){
+//             steps{
+//                 script{
+//                     sh 'docker run --rm -itd --name cont_myapp -p 80:8080 myapp'
+//                 }
+//             }
+//         }
+    }
+}
