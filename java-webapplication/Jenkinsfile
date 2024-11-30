@@ -10,15 +10,22 @@ pipeline {
         SCANNER_HOME = tool 'sonarqube-scanner'
     }
 
+    parameters {
+      choice choices: ['create', 'stop'], description: 'we are stopping the containers to run new build again', name: 'stop containers'
+    }
+
+
     stages {
 
         stage('clone'){
+            when { expression { params.stop_containers == 'create' } }
             steps {
                 git 'https://github.com/VootlaSaiCharan/java-cicd-argo.git'
             }
         }
 
         stage('maven compile'){
+            when { expression { params.stop_containers == 'create' } }
             steps{
                 script{
                     sh 'cd java-webapplication && mvn clean compile'
@@ -27,6 +34,7 @@ pipeline {
         }
 
         stage('Sonarqube analysis'){
+            when { expression { params.stop_containers = 'create' } }
             steps{
                 // insted of adding sonar credential provide the sonarserver name in that we have already configured the sonar credentials
                 withSonarQubeEnv('sonar-server') {
@@ -38,6 +46,7 @@ pipeline {
         }
 
         stage('Creating a Image'){
+            when { expression { params.stop_containers == 'create' } }
             steps{
                 script {
                     // Define the Docker image tag using BUILD_NUMBER to create version tags like v1, v2, v3, etc.
@@ -50,6 +59,7 @@ pipeline {
         }
         
         stage('Running Container'){
+            expression { params.stop_containers == 'create' }
             steps {
                 script {
                     // Define the Docker image tag using BUILD_NUMBER to create version tags like v1, v2, v3, etc.
@@ -57,6 +67,15 @@ pipeline {
                     
                     // Run the container using the created image
                     sh "docker run --rm -itd -p 80:8080 ${DOCKER_IMAGE}"
+                }
+            }
+        }
+
+        stage('stop container'){
+            expression { params.stop_containers == 'stop' }
+            steps{
+                script{
+                    sh "docker stop $(docker ps -aq)"
                 }
             }
         }
