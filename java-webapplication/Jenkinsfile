@@ -11,7 +11,7 @@ pipeline {
     }
 
     parameters {
-      choice choices: ['create', 'delete'], description: 'we are stopping the containers to run new build again', name: 'stop containers'
+      choice choices: ['create', 'delete'], description: 'we are stopping the containers to run new build again', name: 'stop_containers'
     }
 
 
