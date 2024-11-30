@@ -86,6 +86,31 @@ pipeline {
             }
         }
 
+        stage('update the deployment file'){
+            when { expression { return params.action == 'create' } }
+            steps{
+                script {
+                    def DOCKER_IMAGE = "vootlasaicharan/java-cicd-argo:${BUILD_NUMBER}"
+                    def DEPLOYMENT_FILE = "java-webapplication-manifest/deployment.yaml"
+
+                    // Update the deployment file with the new image version
+                    sh """
+                        sed -i 's|image: vootlasaicharan/java-cicd-argo:.*|image: ${DOCKER_IMAGE}|g' ${DEPLOYMENT_FILE}
+                    """
+                    
+                    withCredentials([string(credentialsId: 'git-https-cred-id', variable: 'GIT_TOKEN')]){
+                        // Commit and push the changes to the repository
+                        sh """
+                            git config user.name "vscharan"
+                            git config user.email "charanv369@gmail.com"
+                            git add ${DEPLOYMENT_FILE}
+                            git commit -m "Updated deployment image to ${DOCKER_IMAGE}"
+                            git push origin master
+                        """
+                    }
+                }
+            }
+        }
         stage('stop container'){
             when { expression { return params.action == 'delete' }}
             steps{
