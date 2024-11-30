@@ -58,6 +58,21 @@ pipeline {
             }
         }
         
+        stage('push to docker hub'){
+            when { expression { return params.action == 'create'} }
+            steps{
+                script{
+                    // Define the Docker image tag using BUILD_NUMBER to create version tags like v1, v2, v3, etc.
+                    def DOCKER_IMAGE = "vootlasaicharan/java-cicd-argo:${BUILD_NUMBER}"
+
+                    // Using the withDockerRegistry step to authenticate and push the image
+                    withDockerRegistry(credentialsId: 'dockerhub-cred') {
+                        sh "docker push ${DOCKER_IMAGE}"
+                    }
+                }
+            }
+        }
+        
         stage('Running Container'){
             when{ expression { return params.action == 'create' } }
             steps {
