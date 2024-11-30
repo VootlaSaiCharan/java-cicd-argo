@@ -59,7 +59,7 @@ pipeline {
         }
         
         stage('Running Container'){
-            expression { params.stop_containers == 'create' }
+            when{ expression { params.stop_containers == 'create' } }
             steps {
                 script {
                     // Define the Docker image tag using BUILD_NUMBER to create version tags like v1, v2, v3, etc.
@@ -72,7 +72,7 @@ pipeline {
         }
 
         stage('stop container'){
-            expression { params.stop_containers == 'stop' }
+            when { expression { params.stop_containers == 'stop' }}
             steps{
                 script{
                     sh 'docker stop $(docker ps -aq)'
