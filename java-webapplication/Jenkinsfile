@@ -75,7 +75,7 @@ pipeline {
             expression { params.stop_containers == 'stop' }
             steps{
                 script{
-                    sh "docker stop $(docker ps -aq)"
+                    sh 'docker stop $(docker ps -aq)'
                 }
             }
         }
