@@ -41,10 +41,10 @@ pipeline {
             steps{
                 script {
                     // Define the Docker image tag using BUILD_NUMBER to create version tags like v1, v2, v3, etc.
-                    // def DOCKER_IMAGE = 'vootlasaicharan/java-cicd-argo:${BUILD_NUMBER}'
+                    def DOCKER_IMAGE = 'vootlasaicharan/java-cicd-argo:${BUILD_NUMBER}'
                     
                     // Build the Docker image using the dynamic version
-                    sh 'cd java-webapplication && docker buildx build -t vootlasaicharan/java-cicd-argo:${BUILD_NUMBER} .'
+                    sh 'cd java-webapplication && docker buildx build -t ${DOCKER_IMAGE} .'
                 }
             }
         }
@@ -52,6 +52,9 @@ pipeline {
         stage('Running Container'){
             steps {
                 script {
+                    // Define the Docker image tag using BUILD_NUMBER to create version tags like v1, v2, v3, etc.
+                    def DOCKER_IMAGE = 'vootlasaicharan/java-cicd-argo:${BUILD_NUMBER}'
+                    
                     // Run the container using the created image
                     sh 'docker run --rm -itd -p 80:8080 ${DOCKER_IMAGE}'
                 }
