@@ -34,7 +34,7 @@ pipeline {
         }
 
         stage('Sonarqube analysis'){
-            when { expression { params.stop_containers = 'create' } }
+            when { expression { params.stop_containers == 'create' } }
             steps{
                 // insted of adding sonar credential provide the sonarserver name in that we have already configured the sonar credentials
                 withSonarQubeEnv('sonar-server') {
