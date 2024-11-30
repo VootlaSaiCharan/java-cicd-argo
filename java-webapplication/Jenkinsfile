@@ -98,7 +98,7 @@ pipeline {
                         sed -i 's|image: vootlasaicharan/java-cicd-argo:.*|image: ${DOCKER_IMAGE}|g' ${DEPLOYMENT_FILE}
                     """
                     
-                    withCredentials([string(credentialsId: 'github-cred', variable: 'github-cred')]) {
+                    withCredentials([usernameColonPassword(credentialsId: 'github-cred', variable: 'github-cred')]) {
                         // Commit and push the changes to the repository
                         sh """
                             git config user.name "vscharan"
