@@ -37,7 +37,7 @@ pipeline {
             when { expression { return params.action == 'create' } }
             steps{
                 // insted of adding sonar credential provide the sonarserver name in that we have already configured the sonar credentials
-                withSonarQubeEnv('sonar-server') {
+                withSonarQubeEnv('sonarqube-server') {
                     sh ''' cd java-webapplication && $SCANNER_HOME/bin/sonar-scanner -Dsonar.projectName=Java-cicd-argo \
                     -Dsonar.java.binaries=. \
                     -Dsonar.projectKey=Java-cicd-argo '''
@@ -111,6 +111,7 @@ pipeline {
                 }
             }
         }
+        
         stage('stop container'){
             when { expression { return params.action == 'delete' }}
             steps{
