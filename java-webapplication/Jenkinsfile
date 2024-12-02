@@ -105,7 +105,7 @@ pipeline {
                             git config user.email "charanv369@gmail.com"
                             git add ${DEPLOYMENT_FILE}
                             git commit -m "Updated deployment image to ${DOCKER_IMAGE}"
-                            git push https://${github-cred}@github.com/vootlasaicharan/java-cicd-argo.git master
+                            git push https://${github_cred}@github.com/vootlasaicharan/java-cicd-argo.git master
                         """
                     }
                 }
