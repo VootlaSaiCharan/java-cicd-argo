@@ -91,7 +91,7 @@ pipeline {
             steps{
                 script {
                     def DOCKER_IMAGE = "vootlasaicharan/java-cicd-argo:${BUILD_NUMBER}"
-                    def DEPLOYMENT_FILE = "java-webapplication-manifest/deployment.yaml"
+                    def DEPLOYMENT_FILE = "java-webapplication-manifest/deployment.yml"
 
                     // Update the deployment file with the new image version
                     sh """
