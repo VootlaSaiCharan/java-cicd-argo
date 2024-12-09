@@ -12,7 +12,7 @@ spec:
     spec:
       containers:
         - name: my-container
-          image: vootlasaicharan/java-cicd-argo:25
+          image: vootlasaicharan/java-cicd-argo:3
           ports:
           - containerPort: 8080
   selector:
